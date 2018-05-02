@@ -23,9 +23,10 @@ public class MonsterEmitter {
         }
     }
 
-    private float spawnTimer;
+    private Map map;
     private Monster[] monsters;
     private Wave[] waves;
+    private float spawnTimer;
     private int currentWave;
 
     public Monster[] getMonsters() {
@@ -33,6 +34,7 @@ public class MonsterEmitter {
     }
 
     public MonsterEmitter(TextureAtlas atlas, Map map, int maxSize) {
+        this.map = map;
         this.monsters = new Monster[maxSize];
         for (int i = 0; i < monsters.length; i++) {
             this.monsters[i] = new Monster(atlas, map, 0);
@@ -102,4 +104,6 @@ public class MonsterEmitter {
             }
         }
     }
+
+
 }

@@ -50,7 +50,7 @@ public class ParticleEmitter extends ObjectPool<Particle> {
 
     public void setupByTwoPoints(float x1, float y1, float x2, float y2, float timeMax, float size1, float size2, float r1, float g1, float b1, float a1, float r2, float g2, float b2, float a2) {
         Particle item = getActiveElement();
-        item.init(x1, y1, (x2 - x1) / timeMax, (y2 - y1) /timeMax, timeMax, size1, size2, r1, g1, b1, a1, r2, g2, b2, a2);
+        item.init(x1, y1, (x2 - x1) / timeMax, (y2 - y1) / timeMax, timeMax, size1, size2, r1, g1, b1, a1, r2, g2, b2, a2);
     }
 
     public void update(float dt) {

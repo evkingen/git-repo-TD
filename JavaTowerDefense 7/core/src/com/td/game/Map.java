@@ -51,10 +51,29 @@ public class Map {
         }
     }
 
+    public enum CellType {
+        GRASS("0"), ROAD("1"), CROSSROAD("2"), HOME("5");
+
+        private String symb;
+
+        CellType(String symb) {
+            this.symb = symb;
+        }
+
+        public static CellType getTypeFromString(String str) {
+            for (int i = 0; i < CellType.values().length; i++) {
+                if (CellType.values()[i].symb.equals(str)) {
+                    return CellType.values()[i];
+                }
+            }
+            return null;
+        }
+    }
+
     private int width;
     private int height;
 
-    private byte[][] data;
+    private CellType[][] data;
     private List<Route> routes;
     private TextureRegion textureGrass;
     private TextureRegion textureRoad;
@@ -103,19 +122,11 @@ public class Map {
             }
         }
         width = lines.get(0).split(",").length;
-        data = new byte[width][height];
+        data = new CellType[width][height];
         for (int i = 0; i < height; i++) {
             String[] arr = lines.get(i).split(",");
             for (int j = 0; j < width; j++) {
-                if (arr[j].equals("0")) {
-                    data[j][height - i - 1] = 0;
-                }
-                if (arr[j].equals("1")) {
-                    data[j][height - i - 1] = 1;
-                }
-                if (arr[j].equals("2")) {
-                    data[j][height - i - 1] = 2;
-                }
+                data[j][height - i - 1] = CellType.getTypeFromString(arr[j]);
             }
         }
         routes = new ArrayList<Route>();
@@ -127,10 +138,10 @@ public class Map {
     public void render(SpriteBatch batch) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if (data[i][j] == 0) {
+                if (data[i][j] == CellType.GRASS) {
                     batch.draw(textureGrass, i * 80, j * 80);
                 }
-                if (data[i][j] == 1 || data[i][j] == 2) {
+                if (data[i][j] == CellType.ROAD || data[i][j] == CellType.CROSSROAD) {
                     batch.draw(textureRoad, i * 80, j * 80);
                 }
             }
@@ -138,10 +149,14 @@ public class Map {
     }
 
     public boolean isCrossroad(int cx, int cy) {
-        return data[cx][cy] == 2;
+        return data[cx][cy] == CellType.CROSSROAD;
+    }
+
+    public boolean isHome(int cx, int cy) {
+        return data[cx][cy] == CellType.HOME;
     }
 
     public boolean isCellEmpty(int cx, int cy) {
-        return data[cx][cy] == 0;
+        return data[cx][cy] == CellType.GRASS;
     }
 }

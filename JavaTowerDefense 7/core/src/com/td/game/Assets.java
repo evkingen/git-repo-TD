@@ -47,7 +47,7 @@ public class Assets {
             case GAME:
                 assetManager.load("game.pack", TextureAtlas.class);
                 createStandardFont(24);
-                createStandardFont(48);
+                createStandardFont(36);
                 break;
         }
     }
@@ -57,7 +57,7 @@ public class Assets {
         assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
         assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
         FreetypeFontLoader.FreeTypeFontLoaderParameter fontParameter = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
-        fontParameter.fontFileName = "zorque.ttf";
+        fontParameter.fontFileName = "gomarice.ttf";
         fontParameter.fontParameters.size = size;
         fontParameter.fontParameters.color = Color.WHITE;
         fontParameter.fontParameters.borderWidth = 1;

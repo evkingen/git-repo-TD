@@ -10,7 +10,9 @@ import com.badlogic.gdx.math.Vector2;
 public class Turret {
     private GameScreen gameScreen;
     private Map map;
-    private TextureRegion texture;
+    private int type;
+    private int damage;
+    private TextureRegion[] regions;
     private Vector2 position;
     private float angle;
     private float range;
@@ -25,20 +27,21 @@ public class Turret {
     }
 
     public int getCellX() {
-        return (int)(position.x / 80);
+        return (int) (position.x / 80);
     }
 
     public int getCellY() {
-        return (int)(position.y / 80);
+        return (int) (position.y / 80);
     }
 
     private Vector2 tmpVector;
 
-    public Turret(TextureAtlas atlas, GameScreen gameScreen, Map map, float cellX, float cellY) {
-        this.texture = atlas.findRegion("turret");
+    public Turret(TextureRegion[] regions, GameScreen gameScreen, Map map, float cellX, float cellY) {
+        this.regions = regions;
         this.gameScreen = gameScreen;
         this.map = map;
         this.range = 300;
+        this.damage = 1;
         this.rotationSpeed = 270.0f;
         this.fireDelay = 0.1f;
         this.position = new Vector2(cellX * 80 + 40, cellY * 80 + 40);
@@ -47,7 +50,11 @@ public class Turret {
         this.active = false;
     }
 
-    public void activate(int cellX, int cellY) {
+    public void activate(TurretEmitter.TurretTemplate template, int cellX, int cellY) {
+        this.range = template.getRadius();
+        this.fireDelay = template.getFireRate();
+        this.type = template.getImageIndex();
+        this.damage = template.getDamage();
         setTurretToCell(cellX, cellY);
         active = true;
     }
@@ -63,7 +70,7 @@ public class Turret {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(texture, position.x - 40, position.y - 40, 40, 40, 80, 80, 1, 1, angle);
+        batch.draw(regions[type], position.x - 40, position.y - 40, 40, 40, 80, 80, 1, 1, angle);
     }
 
     public boolean checkMonsterInRange(Monster monster) {
@@ -121,14 +128,18 @@ public class Turret {
         fireTimer += dt;
         if (target != null && fireTimer >= fireDelay && Math.abs(angle - getAngleToTarget()) < 15) {
             fireTimer = 0.0f;
-            float time = 0.2f;
-            float fromX = position.x + (float)Math.cos(Math.toRadians(angle)) * 28;
-            float fromY = position.y + (float)Math.sin(Math.toRadians(angle)) * 28;
+            float bulletSpeed = 400.0f;
+            float fromX = position.x + (float) Math.cos(Math.toRadians(angle)) * 28;
+            float fromY = position.y + (float) Math.sin(Math.toRadians(angle)) * 28;
+            float time = Vector2.dst(fromX, fromY, target.getPosition().x, target.getPosition().y) / bulletSpeed;
             float toX = target.getPosition().x + target.getVelocity().x * time;
             float toY = target.getPosition().y + target.getVelocity().y * time;
-            gameScreen.getParticleEmitter().setupByTwoPoints(fromX, fromY, toX, toY, 0.5f, 1.2f, 1.5f, 1, 1, 0, 1, 1, 0, 0, 1);
-            gameScreen.getParticleEmitter().setupByTwoPoints(fromX, fromY, toX + MathUtils.random(-10, 10), toY + MathUtils.random(-10, 10), 0.5f, 1.2f, 1.5f, 1, 1, 0, 1, 1, 0, 0, 1);
-            target.takeDamage(1);
+            gameScreen.getParticleEmitter().setupByTwoPoints(fromX, fromY, toX, toY, time, 1.2f, 1.5f, 1, 1, 0, 1, 1, 0, 0, 1);
+            gameScreen.getParticleEmitter().setupByTwoPoints(fromX, fromY, toX + MathUtils.random(-10, 10), toY + MathUtils.random(-10, 10), time, 1.2f, 1.5f, 1, 1, 0, 1, 1, 0, 0, 1);
+
+            if (target.takeDamage(damage)) {
+                gameScreen.getPlayerInfo().addMoney(10);
+            }
         }
     }
 }

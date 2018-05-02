@@ -37,6 +37,14 @@ public class Monster {
         return velocity;
     }
 
+    public int getCellX() {
+        return (int)(position.x / 80);
+    }
+
+    public int getCellY() {
+        return (int)(position.y / 80);
+    }
+
     public Monster(TextureAtlas atlas, Map map, int routeIndex) {
         this.map = map;
         this.texture = atlas.findRegion("monster");
@@ -66,6 +74,10 @@ public class Monster {
         return false;
     }
 
+    public void deactivate() {
+        active = false;
+    }
+
     public void activate(int routeIndex) {
         this.offsetX = MathUtils.random(10, 70);
         this.offsetY = MathUtils.random(10, 70);
@@ -87,7 +99,7 @@ public class Monster {
 
     public void renderHUD(SpriteBatch batch, BitmapFont font) {
         batch.draw(textureBackHp, position.x - 30, position.y + 40, 60, 16);
-        batch.draw(textureHp, position.x - 30, position.y + 40, ((float)hp / hpMax) * 60, 16);
+        batch.draw(textureHp, position.x - 30 + 2, position.y + 40 + 2, ((float)hp / hpMax) * 56, 12);
         sbHUD.setLength(0);
         sbHUD.append(hp);
         font.draw(batch, sbHUD, position.x - 30, position.y + 58, 60, 1, false);

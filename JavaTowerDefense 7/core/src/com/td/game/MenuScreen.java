@@ -3,6 +3,7 @@ package com.td.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,6 +21,7 @@ public class MenuScreen implements Screen {
     private Stage stage;
     private Skin skin;
     private Music music;
+    private Sound sound;
     private BitmapFont font32;
     private BitmapFont font96;
 
@@ -34,6 +36,8 @@ public class MenuScreen implements Screen {
 //        music = Gdx.audio.newMusic(Gdx.files.internal("Jumping bat.wav"));
 //        music.setLooping(true);
 //        music.play();
+        // sound = Gdx.audio.newSound(Gdx.files.internal("fire.wav"));
+        // sound.play();
         createGUI();
     }
 
