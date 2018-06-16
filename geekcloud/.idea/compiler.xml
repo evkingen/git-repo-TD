@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="client" />
+        <module name="client2" />
+        <module name="common" />
+        <module name="server" />
+        <module name="sqlService" />
+        <module name="SQLService" />
+        <module name="Strategy" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="client" target="1.8" />
+      <module name="client2" target="1.8" />
+      <module name="common" target="1.8" />
+      <module name="geekcloud" target="1.5" />
+      <module name="server" target="1.8" />
+      <module name="sqlService" target="1.8" />
+      <module name="SQLService" target="1.8" />
+      <module name="Strategy" target="1.5" />
+      <module name="strategy" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
