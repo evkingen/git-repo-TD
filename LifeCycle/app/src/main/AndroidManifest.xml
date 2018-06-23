@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.alohagoha.alohaweather">
+    package="com.alohagoha.lifecycle">
 
     <application
         android:allowBackup="true"
@@ -9,9 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".WeatherActivity"
-            android:theme="@style/NoActionBar">
+        <activity android:name=".LifeCycleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,4 +17,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>
