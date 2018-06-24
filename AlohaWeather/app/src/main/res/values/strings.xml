@@ -2,4 +2,13 @@
     <string name="app_name">Weather</string>
     <string name="weatheractivity">Жизненный цикл WeatherActivity!</string>
     <string name="country">Moscow</string>
+    <string name="textView9">Вт, 5 июня</string>
+    <string name="textView10">Ср, 6 июня</string>
+    <string name="textView11">Чт, 7 июня</string>
+    <string name="textView12">Пт, 8 июня</string>
+    <string name="textView13">+17</string>
+    <string name="textView14">+22</string>
+    <string name="textView15">+21</string>
+    <string name="textView16">+20</string>
+
 </resources>
