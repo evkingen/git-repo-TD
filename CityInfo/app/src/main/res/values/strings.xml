@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CityInfo</string>
+    <string name="Empty">Список городов пуст</string>
+    <string-array name="Cities">
+        <item>Москва</item>
+        <item>Санкт-Петербург</item>
+        <item>Екатеринбург</item>
+        <item>Самара</item>
+        <item>Волгоград</item>
+    </string-array>
+</resources>
