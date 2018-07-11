@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">SocNet</string>
+    <string-array name="cities">
+        <item>Moscow</item>
+        <item>Saint-Petersburg</item>
+        <item>Samara</item>
+        <item>Kazan</item>
+        <item>Lubertsy</item>
+        <item>Rostov</item>
+        <item>Novgorod</item>
+        <item>Kaliningrad</item>
+        <item>Ekaterinburg</item>
+        <item>Sochi</item>
+        <item>Saransk</item>
+    </string-array>
+</resources>

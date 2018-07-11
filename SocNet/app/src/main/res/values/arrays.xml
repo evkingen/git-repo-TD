@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="pictures">
+        <item>@drawable/msc1</item>
+        <item>@drawable/msc2</item>
+        <item>@drawable/msc3</item>
+        <item>@drawable/msc4</item>
+        <item>@drawable/msc5</item>
+        <item>@drawable/msc6</item>
+        <item>@drawable/msc7</item>
+        <item>@drawable/msc8</item>
+        <item>@drawable/msc9</item>
+        <item>@drawable/msc10</item>
+        <item>@drawable/msc11</item>
+        <item>@drawable/msc12</item>
+    </array>
+</resources>

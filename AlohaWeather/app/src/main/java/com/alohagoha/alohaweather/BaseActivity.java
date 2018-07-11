@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 public class BaseActivity extends AppCompatActivity implements BaseView.View, BaseFragment.CallBack {
 
     public void addFragment() {
-        getSupportFragmentManager()
+        getSupportFragmentManager();
 
     }
 
