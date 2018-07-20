@@ -1,4 +1,5 @@
-package com.geekbrains.weather;
+package com.alohagoha.weather_hw_8;
+
 
 import android.content.Context;
 import android.content.Intent;
