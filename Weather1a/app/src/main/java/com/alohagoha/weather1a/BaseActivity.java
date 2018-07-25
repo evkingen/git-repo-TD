@@ -1,5 +1,17 @@
 package com.alohagoha.weather1a;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorEventListener2;
+import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -26,6 +38,7 @@ import es.dmoral.toasty.Toasty;
 public class BaseActivity extends AppCompatActivity
         implements BaseView.View, BaseFragment.Callback, NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int PERMISSION_REQUEST_CODE = 10;
     //инициализация переменных
     private FloatingActionButton fab;
     private TextView textView;
@@ -33,6 +46,13 @@ public class BaseActivity extends AppCompatActivity
     private static String contry;
     private boolean isChecked = false;
 
+    private TextView textHumidity;
+    private TextView textTemperature;
+    private TextView gps_locality;
+    private LocationManager locationManager;
+    private SensorManager sensorManager;
+    private Sensor sensorTemperature;
+    private Sensor sensorHumidity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +81,7 @@ public class BaseActivity extends AppCompatActivity
 
         //инициализация навигации
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this); 
+        navigationView.setNavigationItemSelectedListener(this);
 
         fab = findViewById(R.id.fab);
 
@@ -82,7 +102,24 @@ public class BaseActivity extends AppCompatActivity
                 popupMenu.show();
             }
         });
+        //получение координат местоположения
+        gps_locality = findViewById(R.id.gps_locality);
 
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        //получение датчиков влажоости и температуры
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        sensorTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
+        if (sensorTemperature==null) {
+            Toasty.success(this, "Temperature sensor is nothing!").show();
+        }
+        if (sensorHumidity==null) {
+            Toasty.success(this, "Humidity sensor is nothing!").show();
+        }
+        textTemperature = findViewById(R.id.bigTemp);
+        textHumidity = findViewById(R.id.tv_humidity);
 
         //addFragment(new WeatherFragment());
         startWeatherFragment(contry);
@@ -90,6 +127,111 @@ public class BaseActivity extends AppCompatActivity
             addFragment1(new CreateActionFragment());
         }
 
+
+    }
+
+    SensorEventListener listenerTemperature = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent sensorEvent) {
+            showTemperatureSensors(sensorEvent);
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int i) {
+        }
+    };
+
+    SensorEventListener listenerHumidity = new SensorEventListener() {
+
+        @Override
+        public void onSensorChanged(SensorEvent sensorEvent) {
+            showHumiditySensors(sensorEvent);
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int i) {
+
+        }
+    };
+
+
+    public void showTemperatureSensors(SensorEvent event) {
+        textTemperature.setText(String.format("%.4f",event.values[0]));
+    }
+
+    public void showHumiditySensors(SensorEvent event) {
+        textHumidity.setText(String.format("%.4f",event.values[0]));
+    }
+
+    public void requestForLocationPermission() {
+        if(!ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},10);
+        }
+    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if(requestCode == PERMISSION_REQUEST_CODE) {
+//            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//            }
+//        }
+//    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 10, 10, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 * 10, 10, locationListener);
+        }else{
+            requestForLocationPermission();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        locationManager.removeUpdates(locationListener);
+    }
+
+    private LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            showLocation(location);
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
+                showLocation(locationManager.getLastKnownLocation(provider));
+            }else{
+                requestForLocationPermission();
+            }
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
+    private void showLocation(Location location) {
+        if (location == null)
+            return;
+        gps_locality = findViewById(R.id.gps_locality);
+        gps_locality.setText(formatLocation(location));
+    }
+
+    private String formatLocation(Location location) {
+        if (location == null)
+            return "";
+        return String.format("Населенный пункт:\n%1$.4f , %2$.4f",location.getLatitude(),location.getLongitude());
     }
 
     @Override
