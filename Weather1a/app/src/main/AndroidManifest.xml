@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alohagoha.weather1a">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".App"
@@ -21,10 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity-->
-        <!--android:name=".BaseActivity"-->
-        <!--android:label="@string/title_activity_base" -->
-        <!--android:theme="@style/AppTheme.NoActionBar"  />-->
+        <!-- <activity -->
+        <!-- android:name=".BaseActivity" -->
+        <!-- android:label="@string/title_activity_base" -->
+        <!-- android:theme="@style/AppTheme.NoActionBar"  /> -->
+        <service
+            android:name=".WeatherInfoService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
