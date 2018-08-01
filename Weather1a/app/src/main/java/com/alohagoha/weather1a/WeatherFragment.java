@@ -15,7 +15,7 @@ public class WeatherFragment extends BaseFragment implements CreateActionFragmen
     private static final String ARG_COUNTRY = "ARG_COUNTRY";
     private String country;
     private TextView textView;
-
+    private PrefsHelper prefsHelper;
     public WeatherFragment() {
 //        Особенностью поведения android-а состоит в том, что в любой момент
 //        он может убить конкретный фрагмент (с случаи нехватки памяти например)
@@ -44,6 +44,8 @@ public class WeatherFragment extends BaseFragment implements CreateActionFragmen
         if (getArguments() != null) {
             country = getArguments().getString(ARG_COUNTRY);
         }
+
+        prefsHelper = new PrefsData(getBaseActivity());
     }
 
     @Nullable
@@ -62,6 +64,12 @@ public class WeatherFragment extends BaseFragment implements CreateActionFragmen
             textView.setText(country);
         } else {
             textView.setVisibility(View.GONE);
+        }
+
+        String getSP = prefsHelper.getSharedPreferences(Constants.CITY, Constants.HOME);
+        if (!getSP.equals("")) {
+            textView.setVisibility(View.VISIBLE);
+            textView.setText(getSP);
         }
 
         ((TextView) getBaseActivity().findViewById(R.id.tv_humidity)).setText("30%");

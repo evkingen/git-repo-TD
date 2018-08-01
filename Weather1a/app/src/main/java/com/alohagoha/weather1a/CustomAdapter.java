@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alohagoha.weather1a.model.SelectedCity;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -20,16 +22,17 @@ import java.util.Iterator;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
 
-    private ArrayList<String> cityList = new ArrayList<>();
+    private ArrayList<SelectedCity> cityList = new ArrayList<>();
     private CreateActionFragment.OnHeadlineSelectedListener mCallback;
     private Context context;
-    private ArrayList<String> selectedCities = new ArrayList<>();
     private Boolean isRemoove = false;
+    private PrefsHelper prefsHelper;
 
-    public CustomAdapter(Context context, ArrayList<String> cityList, CreateActionFragment.OnHeadlineSelectedListener mCallback) {
+    public CustomAdapter(Context context, ArrayList<SelectedCity> cityList, CreateActionFragment.OnHeadlineSelectedListener mCallback,BaseActivity baseActivity) {
         this.cityList = cityList;
         this.mCallback = mCallback;
         this.context = context;
+        prefsHelper = new PrefsData(baseActivity);
     }
 
     @NonNull
@@ -42,42 +45,63 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final CustomAdapter.ViewHolder holder, final int position) {
-        holder.textView.setText(cityList.get(position));
+        final SelectedCity selectedCity = cityList.get(position);
+        holder.textView.setText(selectedCity.getCity());
+        if (selectedCity.isSelected()) {
+            holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.blue));
+        } else {
+            holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.white));
+        }
+
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for (int i = 0; i < selectedCities.size(); i++) {
-                    if (selectedCities.get(i).equals(cityList.get(position))) {
-                        holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.white));
-                        selectedCities.remove(selectedCities.get(i));
-                        mCallback.onArticleSelected(selectedCities);
-                        isRemoove = true;
-                    }
-                }
-                if (!isRemoove) {
-                    holder.cardView.setCardBackgroundColor(context.getResources().getColor(R.color.blue));
-                    selectedCities.add(cityList.get(position));
-                    mCallback.onArticleSelected(selectedCities);
-                } else {
-                    isRemoove = false;
-                }
+                setSelected(selectedCity);
             }
         });
 
-        if (cityList.get(position).equals("Moscow")) {
-            holder.cardView.setCardBackgroundColor(Color.RED);
+    }
+
+    private void setSelected(SelectedCity selectedCity) {
+        int pos = 5;
+        for (int i = 0; i < cityList.size(); i++) {
+            if (cityList.get(i).getCity().equals(selectedCity.getCity())) {
+                pos = i;
+                if (!cityList.get(i).isSelected()) {
+                    cityList.get(i).setSelected(true);
+                } else {
+                    cityList.get(i).setSelected(false);
+                }
+            }
         }
 
+        for (int i = 0; i < cityList.size(); i++) {
+            if (i != pos) {
+                cityList.get(i).setSelected(false);
+            }
+        }
+
+        if (selectedCity.isSelected()) {
+            saveInPref(selectedCity.getCity());
+        } else {
+            deleteInPref();
+        }
+
+
+        notifyDataSetChanged();
+    }
+
+    private void deleteInPref() {
+        prefsHelper.deleteSharedPreferences(Constants.CITY);
+    }
+
+    private void saveInPref(String city) {
+        prefsHelper.saveSharedPreferences(Constants.CITY, city);
     }
 
     @Override
     public int getItemCount() {
         return cityList.size();
-    }
-
-    public void setMoscowRed() {
-        cityList.add("Tula");
-        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

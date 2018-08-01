@@ -1,6 +1,10 @@
 package com.alohagoha.weather1a;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -25,6 +29,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -33,11 +38,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alohagoha.weather1a.service.GeoInfoService;
+
 import es.dmoral.toasty.Toasty;
 
 public class BaseActivity extends AppCompatActivity
         implements BaseView.View, BaseFragment.Callback, NavigationView.OnNavigationItemSelectedListener {
-
+    public final static String BROADCAST_ACTION = "BROADCAST_ACTION";
+    public final static String  SENSOR_VAL = "SENSOR_VAL";
     private static final int PERMISSION_REQUEST_CODE = 10;
     //инициализация переменных
     private FloatingActionButton fab;
@@ -53,6 +61,8 @@ public class BaseActivity extends AppCompatActivity
     private SensorManager sensorManager;
     private Sensor sensorTemperature;
     private Sensor sensorHumidity;
+
+    private BroadcastReceiver broadcastReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +74,21 @@ public class BaseActivity extends AppCompatActivity
         setContentView(R.layout.activity_base);
 
         initLayout();
+
+        //if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(BaseActivity.this, GeoInfoService.class);
+            startService(intent);
+            IntentFilter intentValue = new IntentFilter(BROADCAST_ACTION);
+            broadcastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String value = String.valueOf(intent.getDoubleArrayExtra(SENSOR_VAL)[0]);
+                    Log.d(SENSOR_VAL, value);
+                }
+            };
+
+            registerReceiver(broadcastReceiver, intentValue);
+        //}
     }
 
 
