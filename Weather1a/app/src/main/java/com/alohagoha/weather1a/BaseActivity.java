@@ -38,7 +38,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alohagoha.weather1a.data.DataManager;
+import com.alohagoha.weather1a.data.IDataManager;
 import com.alohagoha.weather1a.service.GeoInfoService;
+import com.squareup.picasso.Picasso;
 
 import es.dmoral.toasty.Toasty;
 
@@ -90,6 +93,7 @@ public class BaseActivity extends AppCompatActivity
             registerReceiver(broadcastReceiver, intentValue);
         //}
     }
+
 
 
     private void initLayout() {

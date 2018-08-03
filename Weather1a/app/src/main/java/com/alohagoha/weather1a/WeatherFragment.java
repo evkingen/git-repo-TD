@@ -6,7 +6,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.alohagoha.weather1a.data.DataManager;
+import com.alohagoha.weather1a.data.IDataManager;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -72,11 +77,21 @@ public class WeatherFragment extends BaseFragment implements CreateActionFragmen
             textView.setText(getSP);
         }
 
+        ImageView imageView = view.findViewById(R.id.ivWeather);
+        Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(imageView);
+
+
         ((TextView) getBaseActivity().findViewById(R.id.tv_humidity)).setText("30%");
         ((TextView) getBaseActivity().findViewById(R.id.tv_pressure)).setText("752mmHg");
 
-    }
+        initRetrofit();
 
+    }
+    private void initRetrofit() {
+        IDataManager dataManager = new DataManager();
+        dataManager.initRetrofit();
+        dataManager.requestRetrofit((TextView) getBaseActivity().findViewById(R.id.bigTemp),"Moscow,RU", "8c9412b50f6fa41f93d72c7d62bfdb25");
+    }
     @Override
     public void onArticleSelected(ArrayList<String> citiesList) {
         textView.setVisibility(View.VISIBLE);

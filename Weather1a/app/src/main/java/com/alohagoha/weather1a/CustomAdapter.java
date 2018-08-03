@@ -8,10 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alohagoha.weather1a.model.SelectedCity;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -115,7 +117,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             linearLayout = itemView.findViewById(R.id.linearlayout_item);
             textView = itemView.findViewById(R.id.textview_item);
             cardView = itemView.findViewById(R.id.card_view);
-
         }
-    }
+     }
 }
