@@ -23,4 +23,12 @@
     <string name="two">Two</string>
     <string name="Add">Добавить</string>
     <string name="Clear">Очистить</string>
+    <string name="code">Code</string>
+    <string name="phonenumber">Phone number</string>
+    <string name="alert_title_registration">Registration</string>
+    <string name="alert_cancel">Cancel</string>
+    <string name="alert_ok">Ok</string>
+    <string name="accept">Accept</string>
+    <string name="channel_name">SmsReceiver</string>
+    <string name="channel_description">Getter channelId</string>
 </resources>

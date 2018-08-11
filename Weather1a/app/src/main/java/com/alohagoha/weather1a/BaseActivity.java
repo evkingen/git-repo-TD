@@ -3,6 +3,7 @@ package com.alohagoha.weather1a;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -30,6 +32,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -37,6 +42,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alohagoha.weather1a.data.DataManager;
 import com.alohagoha.weather1a.data.IDataManager;
@@ -64,12 +70,31 @@ public class BaseActivity extends AppCompatActivity
     private SensorManager sensorManager;
     private Sensor sensorTemperature;
     private Sensor sensorHumidity;
-
     private BroadcastReceiver broadcastReceiver;
+    private static BaseActivity instance;
+
+    public static BaseActivity getInstance() {
+        return instance;
+    }
+
+    public void updateTheTextView(final String t) {
+
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LayoutInflater factory = LayoutInflater.from(getBaseContext());
+                View alertView = factory.inflate(R.layout.dialog_registration, null);
+                EditText et_code = alertView.findViewById(R.id.et_code);
+
+                if(et_code!=null) et_code.setText(t);
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        instance = this;
         if (savedInstanceState != null) {
             TextView tv = findViewById(R.id.tvUsername);
             contry = savedInstanceState.getString("NAME");
@@ -97,6 +122,15 @@ public class BaseActivity extends AppCompatActivity
 
 
     private void initLayout() {
+        //permissions
+        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(getApplicationContext(),"Yes", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getApplicationContext(),"No", Toast.LENGTH_LONG).show();
+            requestForReceiveSMSPermission();
+        }
+
+
         //устанавливает тулбар
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -157,6 +191,12 @@ public class BaseActivity extends AppCompatActivity
         }
 
 
+    }
+
+    private void requestForReceiveSMSPermission() {
+       if (!ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.RECEIVE_SMS)){
+           ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS},PERMISSION_REQUEST_CODE);
+       }
     }
 
     SensorEventListener listenerTemperature = new SensorEventListener() {
@@ -329,7 +369,8 @@ public class BaseActivity extends AppCompatActivity
         switch (id) {
             case R.id.action_settings:
                 return true;
-            case R.id.action_info:
+            case R.id.action_registration:
+                dialogRegistration();
                 return true;
             case R.id.action_category:
                 return true;
@@ -352,6 +393,28 @@ public class BaseActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void dialogRegistration() {
+        //BroadcastReceiver
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View alertView = factory.inflate(R.layout.dialog_registration, null);
+        Button acceptButton = alertView.findViewById(R.id.accept);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText et_code = alertView.findViewById(R.id.et_code);
+                EditText et_phone = alertView.findViewById(R.id.et_phonenumber);
+                if(!et_phone.getText().toString().equals("")) {
+                    et_code.setText("123563");
+                }
+            }
+        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(alertView);
+        builder.setTitle(R.string.alert_title_registration);
+        builder.setPositiveButton(R.string.alert_ok, null);
+        builder.show();
     }
 
 
